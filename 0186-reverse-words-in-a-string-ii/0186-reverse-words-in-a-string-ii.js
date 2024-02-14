@@ -6,10 +6,7 @@ var reverseWords = function(s) {
     const reverse = (left, right) => {
         let temp
         while (left < right) {
-            temp = s[left]
-            s[left] = s[right]
-            s[right--] = temp
-            left++
+            [s[left++], s[right--]] = [s[right], s[left]]
         }
     }
     
