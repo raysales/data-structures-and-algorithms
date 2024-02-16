@@ -25,7 +25,10 @@ var nextPermutation = function(nums) {
     }
     
     const swap = (left, right) => {
-        [nums[left], nums[right]] = [nums[right], nums[left]]
+        //[nums[left], nums[right]] = [nums[right], nums[left]]
+        let tmp = nums[left]
+        nums[left] = nums[right]
+        nums[right] = tmp
     }
     
     // find first value that decreases from the right so before the peak
