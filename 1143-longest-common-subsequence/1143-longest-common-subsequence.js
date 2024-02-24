@@ -3,25 +3,25 @@
  * @param {string} text2
  * @return {number}
  */
+
 var longestCommonSubsequence = function(text1, text2) {
     let n = text1.length
     let m = text2.length
     const dp = new Array(n + 1).fill()
                 .map(() => Array(m + 1  ).fill(-1));   
     
-    return dfs(n, m, text1, text2, dp)
-};
+    for (let j = 0; j <= m; j++) dp[0][j] = 0
+    for (let i = 0; i <= n; i++) dp[i][0] = 0
+    
+    for (let i = 1; i <= n; i++) {
+        for (let j = 1; j <= m; j++) {
+            if (text1[i - 1] === text2[j - 1]) 
+                dp[i][j] = 1 + dp[i - 1][j - 1]
 
-const dfs = (i, j, s, t, dp) => {
-    // base case
-    if (i === 0 || j === 0) return 0
+            // chars at i & j differ
+            else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
+        }
+    }
     
-    //console.log({j})
-    if (dp[i][j] !== -1) return dp[i][j]
-    // chars at i & j are the same
-    if (s[i - 1] === t[j - 1]) 
-        return dp[i][j] = 1 + dfs(i - 1, j - 1, s, t, dp)
-    
-    // chars at i & j differ
-    return dp[i][j] = Math.max(dfs(i -1, j, s, t, dp), dfs(i, j - 1, s, t, dp))
-}
+    return dp[n][m]
+};
