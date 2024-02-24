@@ -34,6 +34,7 @@ idx  0  1  2  3  4
             if (isBadVersion(mid)) hi = mid
             else lo = mid + 1
         }
-        return hi
+        // return either lo or high
+        return lo
     };
 };
