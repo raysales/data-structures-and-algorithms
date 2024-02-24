@@ -17,6 +17,13 @@ var solution = function(isBadVersion) {
      * @param {integer} n Total versions
      * @return {integer} The first bad version
      */
+/*
+idx  0  1  2  3  4
+    [1, 2, 3, 4, 5],    bad = 2
+     l
+        m
+        h
+*/         
     return function(n) {
         let mid
         let lo = 1
@@ -27,6 +34,6 @@ var solution = function(isBadVersion) {
             if (isBadVersion(mid)) hi = mid
             else lo = mid + 1
         }
-        return lo
+        return hi
     };
 };
