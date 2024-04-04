@@ -3,7 +3,6 @@
  * @return {number}
  */
 var findMinArrowShots = function(points) {
-    /*
     // sort input points by ending time
     points.sort((a, b) => a[1] - b[1])
     //console.log(points)
@@ -24,8 +23,8 @@ var findMinArrowShots = function(points) {
         }
     }
     return arrows
-    */
     
+    /*
     // sort points asc by start time
     points.sort((a, b) => a[0] - b[0])
     //console.log(points)
@@ -53,4 +52,5 @@ var findMinArrowShots = function(points) {
     //console.log({prev})}
     }    
     return arrows
+    */
 };
