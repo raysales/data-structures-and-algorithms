@@ -11,9 +11,11 @@ class Solution:
             return list1
 
         if list1.val <= list2.val:
-            list1.next = self.mergeTwoLists(list1.next, list2)
-            return list1
+            head = ListNode(list1.val)
+            head.next = self.mergeTwoLists(list1.next, list2)
+           
         else:
-            list2.next = self.mergeTwoLists(list1, list2.next)
-            return list2
+            head = ListNode(list2.val)
+            head.next = self.mergeTwoLists(list1, list2.next)
+        return head 
         
