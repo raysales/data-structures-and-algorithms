@@ -11,7 +11,29 @@
  *     }
  * }
  */
+function rightSideView(root: TreeNode | null): number[] {
+    const result: number[] = [];
 
+    function dfs(node: TreeNode | null, depth: number): void {
+        if (!node) return;
+
+        // If this is the first time we're visiting this level, add the node to the result
+        if (depth === result.length) {
+            result.push(node.val);
+        }
+
+        // First visit the right subtree, then the left subtree
+        dfs(node.right, depth + 1);
+        dfs(node.left, depth + 1);
+    }
+
+    dfs(root, 0);
+    return result;
+}
+
+
+
+/*
 function rightSideView(root: TreeNode | null): number[] {
     const output = [];
     dfs(root, 0, output);
