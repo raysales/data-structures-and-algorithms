@@ -23,7 +23,7 @@ const dfs = (root: TreeNode | null, currentLevel: number, arrOFRightVal: number[
         return;
     }
 
-    if (currentLevel >= arrOFRightVal.length) {
+    if (currentLevel === arrOFRightVal.length) {
         arrOFRightVal.push(root.val);
     }
 
