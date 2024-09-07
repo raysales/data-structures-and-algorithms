@@ -11,6 +11,7 @@
  *     }
  * }
  */
+/*
 function rightSideView(root: TreeNode | null): number[] {
     const result: number[] = [];
 
@@ -30,10 +31,8 @@ function rightSideView(root: TreeNode | null): number[] {
     dfs(root, 0);
     return result;
 }
+*/
 
-
-
-/*
 function rightSideView(root: TreeNode | null): number[] {
     const output = [];
     dfs(root, 0, output);
