@@ -5,21 +5,18 @@
 var minOperations = function(nums) {
     const n = nums.length;
 
-    // Helper function to get all proper divisors of x
-    const getProperDivisors = (x) => {
+    function getProperDivisors(num) {
         const divisors = [];
-        for (let i = 2; i <= Math.sqrt(x); i++) {
-            if (x % i === 0) {
+        for (let i = 2; i <= Math.sqrt(num); i++) {
+            if (num % i === 0) {
                 divisors.push(i);
-                if (i !== x / i) divisors.push(x / i);
+                if (i !== num / i) divisors.push(num / i);
             }
         }
-        return divisors.sort((a, b) => b - a);  // Sort in descending order
-    };
+        return divisors.sort((a, b) => b - a); // Sort in descending order
+    }
 
     let operations = 0;
-
-    // Iterate from the second last element down to the first
     for (let i = n - 2; i >= 0; i--) {
         if (nums[i] <= nums[i + 1]) continue;
 
@@ -27,7 +24,7 @@ var minOperations = function(nums) {
         let divided = false;
 
         for (const divisor of divisors) {
-            if (nums[i] / divisor <= nums[i + 1]) {
+            if (Math.floor(nums[i] / divisor) <= nums[i + 1]) {
                 nums[i] = Math.floor(nums[i] / divisor);
                 operations++;
                 divided = true;
@@ -41,5 +38,6 @@ var minOperations = function(nums) {
     return operations;
 }
 
-// Test case
-//console.log(minOperations([288, 7]));  // Output: 1
+// Test cases
+//console.log(minOperations([288, 7])); // Should output: 1
+//console.log(minOperations([9,10,18,20,2])); // Should output: -1
