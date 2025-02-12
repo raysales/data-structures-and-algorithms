@@ -2,59 +2,33 @@
  * @param {string} s
  * @return {number}
  */
-class TrieNode {
-    constructor() {
-        this.children = new Map();
-        this.isEnd = false;
-    }
-}
-
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    insert(word) {
-        let node = this.root;
-        for (const char of word) {
-            if (!node.children.has(char)) {
-                node.children.set(char, new TrieNode());
-            }
-            node = node.children.get(char);
-        }
-        node.isEnd = true;
-    }
-
-    search(word) {
-        let node = this.root;
-        for (const char of word) {
-            if (!node.children.has(char)) {
-                return false;
-            }
-            node = node.children.get(char);
-        }
-        return node.isEnd;
-    }
-}
-
 function longestRepeatingSubstring(s) {
-    let maxLen = 0;
-    const trie = new Trie();
+    const n = s.length;
+    const dp = new Array(n).fill().map(() => new Array(n).fill(-1)); // Memoization table
+    let maxLen = 0; // Track the length of the longest repeating substring
 
-    for (let i = 0; i < s.length; i++) {
-        let node = trie.root;
-        for (let j = i; j < s.length; j++) {
-            const char = s[j];
-            if (!node.children.has(char)) {
-                node.children.set(char, new TrieNode());
-            } else {
-                maxLen = Math.max(maxLen, j - i + 1);
-            }
-            node = node.children.get(char);
+    // Recursive function with memoization
+    function findCommonLength(i, j) {
+        if (i >= n || j >= n || s[i] !== s[j]) {
+            return 0; // Base case: stop recursion
+        }
+        if (dp[i][j] !== -1) {
+            return dp[i][j]; // Return memoized result
+        }
+        // Recursive case: compute and memoize the result
+        dp[i][j] = 1 + findCommonLength(i + 1, j + 1);
+        return dp[i][j];
+    }
+
+    // Compare all pairs of starting indices (i, j)
+    for (let i = 0; i < n; i++) {
+        for (let j = i + 1; j < n; j++) {
+            const commonLen = findCommonLength(i, j); // Find common substring length
+            maxLen = Math.max(maxLen, commonLen); // Update maxLen
         }
     }
 
-    return maxLen;
+    return maxLen; // Return the length of the longest repeating substring
 }
 
 /* Example usage:
