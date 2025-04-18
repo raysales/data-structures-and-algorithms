@@ -5,66 +5,69 @@
  */
 var largestPathValue = function(colors, edges) {
 
-    // init # of nodes
-    const n = colors.length;
-    
-    // build adjacency list and in-degree array
-    const adj = Array.from({ length: n }, () => []);
-    const inDegree = new Array(n).fill(0);
-    
-    // populate adjacency list and in-degree
-    for (const [u, v] of edges) {
-        adj[u].push(v);
-        inDegree[v]++;
+    const numNodes = colors.length;
+    const adj = new Array(numNodes).fill().map(() => []);
+
+    // ==== GRAPH CONSTRUCTION ====
+    // Build adjacency list: parent -> children mappings
+    for (const [parNode, childNode] of edges) {
+        adj[parNode].push(childNode);
     }
-    
-    // init queue with nodes having zero in-degree
-    const queue = [];
-    // init color counts for each node (26 letters)
-    const colorCounts = Array.from({ length: n }, () => new Array(26).fill(0));
-    
-    // loop through all nodes to initialize the topo sort queue
-    for (let i = 0; i < n; i++) {
-        if (inDegree[i] === 0) {
-            queue.push(i);
-            // set the node's own color count to 1
-            const colorIdx = colors.charCodeAt(i) - 'a'.charCodeAt(0);
-            colorCounts[i][colorIdx] = 1;
-        }
-    }
-    
-    let processed = 0; // track number of processed nodes
-    let maxColorValue = 0; // track the max color value found
-    
-    // process nodes in topo order
-    while (queue.length > 0) {
-        const u = queue.shift();
-        processed++;
+
+    // ==== VISITED STATES ====
+    // 0 = unvisited, 1 = visiting (current path), 2 = fully processed
+    const visited = new Array(numNodes).fill(0);
+
+    // ==== COLOR COUNT MATRIX ====
+    // colorCounts[parNode][curColorIdx] = max count of color in paths ending at parNode
+    const colorCounts = new Array(numNodes).fill().map(() => new Array(26).fill(0));
+    let globalMax = 0;
+
+    // ==== POST-ORDER DFS ====
+    const dfs = (parNode) => {
+        // [1] CYCLE DETECTION
+        if (visited[parNode] === 1) return false; // Back edge → cycle detected
+        if (visited[parNode] === 2) return true;  // Already processed
         
-        // update maxColorValue w/ the max count in curf node's color counts
-        const currentMax = Math.max(...colorCounts[u]);
-        maxColorValue = Math.max(maxColorValue, currentMax);
-        
-        // Propagate color counts to neighbors
-        for (const v of adj[u]) {
-            const colorIdx = colors.charCodeAt(v) - 'a'.charCodeAt(0);
-            for (let c = 0; c < 26; c++) {
-                // New count is predecessor's count plus 1 if same color
-                const newCount = colorCounts[u][c] + (c === colorIdx ? 1 : 0);
-                // Update neighbor's count if new count is higher
-                if (newCount > colorCounts[v][c]) {
-                    colorCounts[v][c] = newCount;
-                }
-            }
+        visited[parNode] = 1; // Mark as currently being visited
+
+        // [2] INITIALIZE PARENT'S OWN COLOR COUNT
+        const parColorIdx = colors.charCodeAt(parNode) - 97; // 'a'=0, ..., 'z'=25
+        colorCounts[parNode][parColorIdx] = 1; // At least 1 for the parent itself
+
+        // [3] PROCESS ALL CHILDREN FIRST (POST-ORDER)
+        for (const childNode of adj[parNode]) {
+            if (!dfs(childNode)) return false; // Propagate cycle detection if found
             
-            // decrement in-degree and add to queue if in-degree becomes 0
-            inDegree[v]--;
-            if (inDegree[v] === 0) {
-                queue.push(v);
+            // [4] MERGE CHILD'S COLOR COUNTS INTO PARENT
+            for (let curColorIdx = 0; curColorIdx < 26; curColorIdx++) {
+                // Calculate merged count:
+                // - Child's count for curColorIdx
+                // - Plus 1 if parent's color matches current color bucket
+                const mergedCount = colorCounts[childNode][curColorIdx] + 
+                                   (curColorIdx === parColorIdx ? 1 : 0);
+                
+                // Update parent's count to be the maximum between:
+                // - Its current count for curColorIdx
+                // - The new mergedCount
+                colorCounts[parNode][curColorIdx] = Math.max(
+                    colorCounts[parNode][curColorIdx], 
+                    mergedCount
+                );
             }
         }
+
+        // [5] UPDATE GLOBAL MAXIMUM COLOR COUNT
+        globalMax = Math.max(globalMax, ...colorCounts[parNode]);
+
+        visited[parNode] = 2; // Mark as fully processed
+        return true;
+    };
+
+    // ==== EXECUTE DFS ON ALL NODES ====
+    for (let node = 0; node < numNodes; node++) {
+        if (!dfs(node)) return -1; // Return -1 if cycle detected
     }
     
-    // if all nodes processed, return maxColorValue else, return -1 (cycle detected)
-    return processed === n ? maxColorValue : -1;
+    return globalMax; // Largest color value in any path
 };
