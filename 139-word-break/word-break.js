@@ -21,6 +21,31 @@ This approach scales better for larger inputs, especially when wordDict is large
 Simplicity:
 The logic is straightforward: generate prefixes and check if they exist in wordDict.
 */
+
+function wordBreak(s, wordDict) {
+/* BU DP traversing from the end of input where base case of dp after length of
+   input string is empty & set to true.  Compare str from each idx to word in dict
+   as well as dp val at idx after any word comparisons.  if dp at idx 0 is true
+   then return true
+*/
+    const words = new Set(wordDict)
+    // create dp array
+    const dp = new Array(s.length + 1).fill(false)
+    dp[s.length] = true
+
+    for (let i = s.length - 1; i >= 0; i--) {
+        for (word of wordDict) {
+            let wordLen = word.length
+            if (s.length >= i + wordLen && s.substring(i, i + wordLen) === word) {
+                dp[i] = dp[i + wordLen]
+                if (dp[i]) break
+            }
+        }
+    }
+    return dp[0]
+}
+
+/*
 function wordBreak(s, wordDict) {
   const wordSet = new Set(wordDict); // Convert wordDict to a Set for O(1) lookups
   const maxWordLength = Math.max(...wordDict.map(word => word.length)); // Get max word length
@@ -39,3 +64,43 @@ function wordBreak(s, wordDict) {
 
   return dp[s.length]; // The result for the entire string
 }
+*/
+/*
+//  s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+//               ^
+//        
+//c
+c
+ca
+cat
+   s
+   sa
+   san
+   sand
+        o
+        og
+   sando
+   sandog
+cats
+   a
+   an
+   and
+      o
+      og
+   ando
+   andog
+catsa
+catsan
+catsand
+catsando
+catsandog
+     
+//helper(idx)
+//base idx is over the length of string 
+// for loop i :idx to length of string
+//   let s =  concat(idx)
+// if (s is in dictionary)
+//      if (helper(i+1))
+//          return true
+// return false
+*/
