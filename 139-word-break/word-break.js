@@ -28,17 +28,16 @@ function wordBreak(s, wordDict) {
    as well as dp val at idx after any word comparisons.  if dp at idx 0 is true
    then return true
 */
-    const words = new Set(wordDict)
-    // create dp array
+    const wordSet = new Set(wordDict)
     const dp = new Array(s.length + 1).fill(false)
     dp[s.length] = true
 
     for (let i = s.length - 1; i >= 0; i--) {
-        for (word of wordDict) {
-            let wordLen = word.length
-            if (s.length >= i + wordLen && s.substring(i, i + wordLen) === word) {
-                dp[i] = dp[i + wordLen]
-                if (dp[i]) break
+        for (let j = i + 1; j <= s.length; j++) {
+            let substr = s.substring(i, j)
+            if (wordSet.has(substr) && dp[j]) {
+                dp[i] = true
+                break
             }
         }
     }
